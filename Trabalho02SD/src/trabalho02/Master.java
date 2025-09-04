@@ -105,13 +105,6 @@ public class Master {
         int avgDiff = calcularDiferencaMedia(listaDifSlaves);
         
         // O Master calcula e aplica o ajuste no prórpio horário
-        
-        /* COMENTÁRIO ALANA -> O MÉTODO calcularAjusteMaster PARECE INÚTIL, JÁ QUE ELE SÓ RETORNA O QUE JÁ PASSAMOS COMO PARÂMETRO
-         * FORMA ANTIGA:
-         * int masterAdjustment = calcularAjusteMaster(avgDiff);
-         * aplicarAjustesMaster(masterAdjustment);*/
-        
-        // FORMA NOVA:
         aplicarAjustesMaster(avgDiff);
         
         // O Master envia os ajustes para cada Slave individualmente
@@ -128,7 +121,7 @@ public class Master {
     private void enviarAjustes(MulticastSocket socket, int avgDiff) throws Exception {
         for (Map.Entry<InetSocketAddress, Integer> entry : listaDifSlaves.entrySet()) {
             InetSocketAddress address = entry.getKey();
-            if (address.getPort() == MULTICAST_PORT) { continue; }
+            if (address.getPort() == MULTICAST_PORT) { continue; } // Se o endereço do item for o mesmo do Master, isso quer dizer que é o próprio Master, logo, ignora (já processado)
             int clientDiff = entry.getValue();
             int adjustment = calcularAjuste(clientDiff, avgDiff);
             String msg = "AJUSTE:" + adjustment;
@@ -150,9 +143,4 @@ public class Master {
     public static int calcularAjuste(int clientDiff, int avgDiff) {
         return -(clientDiff - avgDiff);
     }
-
-    /* COMENTÁRIO ALANA -> O MÉTODO calcularAjusteMaster PARECE INÚTIL, JÁ QUE ELE SÓ RETORNA O QUE JÁ PASSAMOS COMO PARÂMETRO
-     * public static int calcularAjusteMaster(int avgDiff) {
-        return avgDiff;
-    }*/
 }

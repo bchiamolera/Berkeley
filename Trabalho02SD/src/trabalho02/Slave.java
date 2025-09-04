@@ -6,6 +6,7 @@ public class Slave implements Runnable {
 	private int horario;
 	private final String ip;
 	private final int porta;
+
     private static final int MULTICAST_PORT = 8000;
     private static final String MULTICAST_GROUP = "228.5.6.7";
     private static final int TIMEOUT = 15000;
@@ -44,7 +45,7 @@ public class Slave implements Runnable {
 
             DatagramSocket finalUnicastSocket = unicastSocket;
             new Thread(() -> escutarUnicast(finalUnicastSocket)).start();
-
+            
             while (true) {
                 processarMensagensMulticast(multicastSocket, group);
             }
